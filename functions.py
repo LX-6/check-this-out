@@ -135,6 +135,23 @@ def get_refreshed_token(refresh_token, client_id, client_secret, refresh_url):
     authorization_header = {"Authorization":"Bearer " + str(access_token)}
     return authorization_header
 
+#Return top user artists
+def top_artist(token, timing):
+    #Auth with token
+    try:
+        sp = spotipy.Spotify(auth=token)
+    except:
+        print("Can't get token")
+        return
+    
+    returned_string = ''
+    
+    artists = sp.current_user_top_artists(limit=10, time_range=timing)#short_term, medium_term, long_term
+    for artist in artists['items']:
+        returned_string += artist['name'] + "\n"
+
+    return returned_string
+
 #Search if messenger_id exist in DB and if so, return the refresh_token associated, if not return None
 def search_user_db(database_url, messenger_id):
     #Set returned variable

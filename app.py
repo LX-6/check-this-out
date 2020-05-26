@@ -59,7 +59,7 @@ def webhook_action():
             #User message in lower case
             user_message = entry['messaging'][0]['message']['text'].lower()
 
-            if user_message == 'update':
+            if 'update' in user_message:
                 #Search for this user_id in DB
                 search_returned = functions.search_user_db(DATABASE_URL, user_id)
                 #If user_id is not in the DB
@@ -74,7 +74,7 @@ def webhook_action():
                     list_artist = functions.followed_list(authorization_header)
                     #Return new release list as a string
                     returned_message = functions.new_release(authorization_header, list_artist)                
-            elif user_message == 'top track':
+            elif 'top track' in user_message:
                 #Search for this user_id in DB
                 search_returned = functions.search_user_db(DATABASE_URL, user_id)
                 #If user_id is not in the DB
@@ -83,12 +83,19 @@ def webhook_action():
                     returned_message = functions.app_authorization(CLIENT_ID, REDIRECT_URI, SCOPE, user_id, SPOTIFY_AUTH_URL)
                 #If user_id is in the DB
                 else:
+                    choice = ['short', 'medium', 'long']
+                    #If user do not send any choice we set by default for medium
+                    timing = 'medium_term'
+
+                    #Define choice for top time range
+                    for c in choice:
+                        if c in user_message:
+                            timing = c + '_term'
+
                     #Asking for a new access_token, search_returned == refresh_token
                     authorization_header = functions.get_refreshed_token(search_returned, CLIENT_ID, CLIENT_SECRET, SPOTIFY_TOKEN_URL)
-                    #Get followed artists list back
-                    list_artist = functions.followed_list(authorization_header)
-                    #Return new release list as a string
-                    returned_message = functions.new_release(authorization_header, list_artist)  
+                    #Return top user artist
+                    returned_message = top_artist(token, timing) 
             else:
                 returned_message = 'Hello! Welcome on Check this out App :)\nThe purpose of this bot is to inform you of the release of new music by the artists you follow on Spotify.\nYou need to send "update" to get data back. If you use it for the first time you have to accept the app can access to your Spotify data (nothing is store or sell).\nAfter it, you just have to send "update" to receive the new releases list !'
 
@@ -120,12 +127,11 @@ def callback():
             #Save in DB refresh_token
             functions.store_db(refresh_token, user_id, DATABASE_URL)
 
-            list_artist = functions.followed_list(authorization_header)
-            returned_message = functions.new_release(authorization_header, list_artist)
+            returned_message = "Everything worked fine, you can resend a message"
         except:
             returned_message = "It seems you did not accept to authorize access to the data sets defined in the scopes :(\nYou can't use the app without it.\nWe do not save or sell your personal datas!"
         functions.send_messenger_message(returned_message, ACCESS_TOKEN, user_id) 
-        return "You can close this tab :)"
+        return "You can close this tab and resend message :)"
     except:
         return "You need to send a message to this messenger bot : https://m.me/106434560955345"
         
