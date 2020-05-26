@@ -74,7 +74,7 @@ def webhook_action():
                     list_artist = functions.followed_list(authorization_header)
                     #Return new release list as a string
                     returned_message = functions.new_release(authorization_header, list_artist)                
-            elif 'top track' in user_message:
+            elif 'top artist' in user_message:
                 #Search for this user_id in DB
                 search_returned = functions.search_user_db(DATABASE_URL, user_id)
                 #If user_id is not in the DB
@@ -95,7 +95,7 @@ def webhook_action():
                     #Asking for a new access_token, search_returned == refresh_token
                     authorization_header = functions.get_refreshed_token(search_returned, CLIENT_ID, CLIENT_SECRET, SPOTIFY_TOKEN_URL)
                     #Return top user artist
-                    returned_message = top_artist(token, timing) 
+                    returned_message = functions.top_artist(token, timing) 
             else:
                 returned_message = 'Hello! Welcome on Check this out App :)\nThe purpose of this bot is to inform you of the release of new music by the artists you follow on Spotify.\nYou need to send "update" to get data back. If you use it for the first time you have to accept the app can access to your Spotify data (nothing is store or sell).\nAfter it, you just have to send "update" to receive the new releases list !'
 
