@@ -58,31 +58,23 @@ def webhook_action():
         try:
             #User message in lower case
             user_message = entry['messaging'][0]['message']['text'].lower()
-
-            if 'update' in user_message:
-                #Search for this user_id in DB
-                search_returned = functions.search_user_db(DATABASE_URL, user_id)
-                #If user_id is not in the DB
-                if not search_returned:
-                    #Return authorize endpoint the user needs to log in
-                    returned_message = functions.app_authorization(CLIENT_ID, REDIRECT_URI, SCOPE, user_id, SPOTIFY_AUTH_URL)
-                #If user_id is in the DB
-                else:
+            #Search for this user_id in DB
+            search_returned = functions.search_user_db(DATABASE_URL, user_id)
+            #If user_id is not in the DB
+            if not search_returned:
+                #Return authorize endpoint the user needs to log in
+                returned_message = functions.app_authorization(CLIENT_ID, REDIRECT_URI, SCOPE, user_id, SPOTIFY_AUTH_URL)
+            #If user_id is in the DB
+            else:
+                #Different case
+                if 'update' in user_message:
                     #Asking for a new access_token, search_returned == refresh_token
                     authorization_header = functions.get_refreshed_token(search_returned, CLIENT_ID, CLIENT_SECRET, SPOTIFY_TOKEN_URL)
                     #Get followed artists list back
                     list_artist = functions.followed_list(authorization_header)
                     #Return new release list as a string
                     returned_message = functions.new_release(authorization_header, list_artist)                
-            elif 'top artist' in user_message:
-                #Search for this user_id in DB
-                search_returned = functions.search_user_db(DATABASE_URL, user_id)
-                #If user_id is not in the DB
-                if not search_returned:
-                    #Return authorize endpoint the user needs to log in
-                    returned_message = functions.app_authorization(CLIENT_ID, REDIRECT_URI, SCOPE, user_id, SPOTIFY_AUTH_URL)
-                #If user_id is in the DB
-                else:
+                elif 'top artist' in user_message:
                     choice = ['short', 'medium', 'long']
                     #If user do not send any choice we set by default for medium
                     timing = 'medium_term'
@@ -96,15 +88,7 @@ def webhook_action():
                     authorization_header = functions.get_refreshed_token(search_returned, CLIENT_ID, CLIENT_SECRET, SPOTIFY_TOKEN_URL)
                     #Return top user artist
                     returned_message = functions.top_artist(authorization_header, timing)
-            elif 'top track' in user_message:
-                #Search for this user_id in DB
-                search_returned = functions.search_user_db(DATABASE_URL, user_id)
-                #If user_id is not in the DB
-                if not search_returned:
-                    #Return authorize endpoint the user needs to log in
-                    returned_message = functions.app_authorization(CLIENT_ID, REDIRECT_URI, SCOPE, user_id, SPOTIFY_AUTH_URL)
-                #If user_id is in the DB
-                else:
+                elif 'top track' in user_message:
                     choice = ['short', 'medium', 'long']
                     #If user do not send any choice we set by default for medium
                     timing = 'medium_term'
@@ -118,8 +102,8 @@ def webhook_action():
                     authorization_header = functions.get_refreshed_token(search_returned, CLIENT_ID, CLIENT_SECRET, SPOTIFY_TOKEN_URL)
                     #Return top user artist
                     returned_message = functions.top_track(authorization_header, timing) 
-            else:
-                returned_message = 'Hello! Welcome on Check this out App :)\nThe purpose of this bot is to inform you of the release of new music by the artists you follow on Spotify.\nYou need to send "update" to get data back. If you use it for the first time you have to accept the app can access to your Spotify data (nothing is store or sell).\nAfter it, you just have to send "update" to receive the new releases list !'
+                else:
+                    returned_message = 'Hello! Welcome on Check this out App :)\nThe purpose of this bot is to inform you of the release of new music by the artists you follow on Spotify.\nYou need to send "update" to get data back. If you use it for the first time you have to accept the app can access to your Spotify data (nothing is store or sell).\nAfter it, you just have to send "update" to receive the new releases list !'
 
         #The user sent an other type of content than a message
         except:
