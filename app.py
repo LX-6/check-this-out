@@ -108,12 +108,9 @@ def webhook_action():
         #The user sent an other type of content than a message
         except:
             returned_message = 'I do not understand what you sent me :( Please send me a normal message'
+            
+        functions.send_messenger_message(returned_message, ACCESS_TOKEN, user_id)
 
-        response = {
-                'recipient': {'id': user_id},
-                'message': {'text': returned_message}
-            }
-        r = requests.post('https://graph.facebook.com/v7.0/me/messages/?access_token=' + ACCESS_TOKEN, json=response)
     return Response(response="EVENT RECEIVED",status=200)
 
 #Logic function sending a message with proper response to messenger user
