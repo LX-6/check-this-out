@@ -30,7 +30,7 @@ SPOTIFY_API_URL = SPOTIFY_API_BASE_URL + "/" + API_VERSION
 
 #Server-side Parameters
 REDIRECT_URI = os.getenv('SPOTIPY_REDIRECT_URI')
-SCOPE = "user-follow-readuser-top-read"
+SCOPE = "user-follow-read%20user-top-read"
 
 #TO-DO static page to explain the app and redirect to github repo
 @app.route("/")
