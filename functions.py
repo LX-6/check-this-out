@@ -146,9 +146,26 @@ def top_artist(token, timing):
     
     returned_string = ''
     
-    artists = sp.current_user_top_artists(limit=10, time_range=timing)#short_term, medium_term, long_term
+    artists = sp.current_user_top_artists(limit=10, time_range=timing)
     for artist in artists['items']:
         returned_string += artist['name'] + "\n"
+
+    return returned_string
+
+#Return top user track
+def top_track(token, timing):
+    #Auth with token
+    try:
+        sp = spotipy.Spotify(auth=token)
+    except:
+        print("Can't get token")
+        return
+    
+    returned_string = ''
+    
+    tracks = sp.current_user_top_tracks(limit=10, time_range=timing)
+    for track in tracks['items']:
+        returned_string += track['name'] + "\n"
 
     return returned_string
 
