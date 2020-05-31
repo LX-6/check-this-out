@@ -76,6 +76,7 @@ def new_release(token, list_artist):
     else:
         today = datetime.date.today()
         returned_album = ''
+        returned_single = ''
         returned_feat = ''
         #Auth with token
         try:
@@ -87,7 +88,6 @@ def new_release(token, list_artist):
         today_minus = today - datetime.timedelta(days=7)
         #Browse followed artists list
         for id_artist in list_artist:
-            #Get all artist albums
             all_albums = sp.artist_albums(id_artist)
             #Browse all artist albums
             for album in all_albums['items']:
@@ -97,15 +97,18 @@ def new_release(token, list_artist):
                 except:
                     #Some album have different date typo
                     release_date = datetime.datetime.strptime(album['release_date'], "%Y").date()
-                #Check for release date and remove all trash compilation SummerHit bullshit
                 if release_date > today_minus and album['album_type'] != 'compilation' and album['artists'][0]['name'] != 'Various Artists':
-                    #Check if the followed artist featured the song
-                    if album['album_group'] == 'appears_on':
+                    #We add the release type, the artist name & the release date
+                    if album['album_type'] == 'album':
+                        returned_album += "[Album] " + album['artists'][0]['name'] + " released " + album['name'] + " on " + album['release_date'] + "\n"
+                    elif album['album_group'] == 'appears_on':
                         artist = sp.artist(id_artist)
-                        returned_feat += "[Feat] " + artist['name'] + " appears on " + album['name'] + " " + album['album_type'] + " of " + album['artists'][0]['name'] + " released on " + album['release_date'] + "\n"
+                        returned_feat += "[Feat] " + artist['name'] + " appears on " + album['name'] + " of " + album['artists'][0]['name'] + " released on " + album['release_date'] + "\n"
                     else:
-                        returned_album += "[Album/Single] New " + album['album_type'] + " of " + album['artists'][0]['name'] + " released on " + album['release_date'] + " : " + album['name'] + "\n"
-        returned_string = returned_album + returned_feat
+                        returned_single += "[Single] " + album['artists'][0]['name'] + " released " + album['name'] + " on " + album['release_date'] + "\n"
+        returned_string = returned_album + returned_single + returned_feat
+    if len(returned_string) > 2000:
+        returned_string = 'The list is to long to send it through messenger message sorry :/'
     return returned_string
 
 #Send message to a specific user named after user_id
