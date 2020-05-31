@@ -75,7 +75,8 @@ def new_release(token, list_artist):
         returned_string = 'It seems you do not follow any artist on Spotify\nSee this to know how to : https://support.spotify.com/us/using_spotify/features/how-do-i-follow-unfollow-friends-and-artists-on-spotify/'
     else:
         today = datetime.date.today()
-        returned_string = ''
+        returned_album = ''
+        returned_feat = ''
         #Auth with token
         try:
             sp = spotipy.Spotify(auth=token)
@@ -97,14 +98,14 @@ def new_release(token, list_artist):
                     #Some album have different date typo
                     release_date = datetime.datetime.strptime(album['release_date'], "%Y").date()
                 #Check for release date and remove all trash compilation SummerHit bullshit
-                if release_date > today_minus and album['album_type'] != 'compilation':
+                if release_date > today_minus and album['album_type'] != 'compilation' and album['artists'][0]['name'] != 'Various Artists':
                     #Check if the followed artist featured the song
                     if album['album_group'] == 'appears_on':
                         artist = sp.artist(id_artist)
-                        returned_string += artist['name'] + " appears on " + album['name'] + " " + album['album_type'] + " of " + album['artists'][0]['name'] + " released on " + album['release_date'] + "\n"
+                        returned_feat += "[Feat] " + artist['name'] + " appears on " + album['name'] + " " + album['album_type'] + " of " + album['artists'][0]['name'] + " released on " + album['release_date'] + "\n"
                     else:
-                        returned_string += "New " + album['album_type'] + " of " + album['artists'][0]['name'] + " released on " + album['release_date'] + " : " + album['name'] + "\n"
-
+                        returned_album += "[Album/Single] New " + album['album_type'] + " of " + album['artists'][0]['name'] + " released on " + album['release_date'] + " : " + album['name'] + "\n"
+        returned_string = returned_album + returned_feat
     return returned_string
 
 #Send message to a specific user named after user_id
