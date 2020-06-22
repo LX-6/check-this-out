@@ -64,6 +64,9 @@ def webhook_action():
             if not search_returned:
                 #Return authorize endpoint the user needs to log in
                 returned_message = functions.app_authorization(CLIENT_ID, REDIRECT_URI, SCOPE, user_id, SPOTIFY_AUTH_URL)
+            #Send functions menu to the user
+            elif '!menu' in user_message:
+                returned_message = "update : get the new releases list for the followed artists\ntop artist [short | medium | long] : get your current top artists for time range selected\ntop track [short | medium | long] : get your current top tracks for time range selected"
             #If user_id is in the DB
             else:
                 #Different case
@@ -103,7 +106,7 @@ def webhook_action():
                     #Return top user artist
                     returned_message = functions.top_track(authorization_header, timing) 
                 else:
-                    returned_message = 'Hello! Welcome on Check this out App :)\nThe purpose of this bot is to inform you of the release of new music by the artists you follow on Spotify.\nYou need to send "update" to get data back. If you use it for the first time you have to accept the app can access to your Spotify data (nothing is store or sell).\nAfter it, you just have to send "update" to receive the new releases list !'
+                    returned_message = "Hello! Welcome on Check this out App :)\nIt's a multifunction Spotify bot\nSend '!menu' to view all functions you can use"
 
         #The user sent an other type of content than a message
         except:
