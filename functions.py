@@ -41,8 +41,7 @@ def followed_list(token):
     try:
         sp = spotipy.Spotify(auth=token)
     except:
-        print("Can't get token")
-        return
+        return "Woopsie, I have an issue :s"
 
     #Ask for the first 50 followed artists
     results = sp.current_user_followed_artists(limit=50)
@@ -145,8 +144,7 @@ def top_artist(token, timing):
     try:
         sp = spotipy.Spotify(auth=token)
     except:
-        print("Can't get token")
-        return
+        return "Woopsie, I have an issue :s"
     
     returned_string = ''
     
@@ -162,8 +160,7 @@ def top_track(token, timing):
     try:
         sp = spotipy.Spotify(auth=token)
     except:
-        print("Can't get token")
-        return
+        return "Woopsie, I have an issue :s"
     
     returned_string = ''
     
