@@ -65,7 +65,7 @@ def webhook_action():
                 #Return authorize endpoint the user needs to log in
                 returned_message = functions.app_authorization(CLIENT_ID, REDIRECT_URI, SCOPE, user_id, SPOTIFY_AUTH_URL)
             #Send functions menu to the user
-            elif '!menu' in user_message:
+            elif 'menu' in user_message:
                 returned_message = "update : get the new releases list for the followed artists\ntop artist [short | medium | long] : get your current top artists for time range selected\ntop track [short | medium | long] : get your current top tracks for time range selected"
             #If user_id is in the DB
             else:
