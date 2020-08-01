@@ -98,11 +98,11 @@ def new_release(token, list_artist):
                     release_date = datetime.datetime.strptime(album['release_date'], "%Y").date()
                 if release_date > today_minus and album['album_type'] != 'compilation' and album['artists'][0]['name'] != 'Various Artists':
                     #We add the release type, the artist name & the release date
-                    if album['album_type'] == 'album':
-                        returned_album += "[Album] " + album['artists'][0]['name'] + " released " + album['name'] + " on " + album['release_date'] + "\n"
-                    elif album['album_group'] == 'appears_on':
+                    if album['album_group'] == 'appears_on':
                         artist = sp.artist(id_artist)
                         returned_feat += "[Feat] " + artist['name'] + " appears on " + album['name'] + " of " + album['artists'][0]['name'] + " released on " + album['release_date'] + "\n"
+                    elif album['album_type'] == 'album':
+                        returned_album += "[Album] " + album['artists'][0]['name'] + " released " + album['name'] + " on " + album['release_date'] + "\n"
                     else:
                         returned_single += "[Single] " + album['artists'][0]['name'] + " released " + album['name'] + " on " + album['release_date'] + "\n"
         returned_string = returned_album + returned_single + returned_feat
