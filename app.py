@@ -5,6 +5,7 @@ import sys
 import argparse
 import urllib
 import functions
+import schedule
 
 app = Flask(__name__)
 
@@ -69,14 +70,16 @@ def webhook_action():
                 returned_message = "update : get the new releases list for the followed artists\ntop artist [short | medium | long] : get your current top artists for time range selected\ntop track [short | medium | long] : get your current top tracks for time range selected"
             #If user_id is in the DB
             else:
-                #Different case
+                #Different cases
                 if 'update' in user_message:
                     #Asking for a new access_token, search_returned == refresh_token
                     authorization_header = functions.get_refreshed_token(search_returned, CLIENT_ID, CLIENT_SECRET, SPOTIFY_TOKEN_URL)
                     #Get followed artists list back
                     list_artist = functions.followed_list(authorization_header)
                     #Return new release list as a string
-                    returned_message = functions.new_release(authorization_header, list_artist)                
+                    returned_message = functions.new_release(authorization_header, list_artist) 
+
+                #Top artist               
                 elif 'top artist' in user_message:
                     choice = ['short', 'medium', 'long']
                     #If user do not send any choice we set by default for medium
@@ -91,6 +94,8 @@ def webhook_action():
                     authorization_header = functions.get_refreshed_token(search_returned, CLIENT_ID, CLIENT_SECRET, SPOTIFY_TOKEN_URL)
                     #Return top user artist
                     returned_message = functions.top_artist(authorization_header, timing)
+                
+                #Top track
                 elif 'top track' in user_message:
                     choice = ['short', 'medium', 'long']
                     #If user do not send any choice we set by default for medium
@@ -104,7 +109,21 @@ def webhook_action():
                     #Asking for a new access_token, search_returned == refresh_token
                     authorization_header = functions.get_refreshed_token(search_returned, CLIENT_ID, CLIENT_SECRET, SPOTIFY_TOKEN_URL)
                     #Return top user artist
-                    returned_message = functions.top_track(authorization_header, timing) 
+                    returned_message = functions.top_track(authorization_header, timing)
+                
+                #Enabled auto weekly playlist
+                elif 'start' in user_message:
+
+                    functions.change_autoplaylist_attribute(DATABASE_URL, user_id, "true")
+
+                    returned_message = "Auto weekly playlist mode has been enabled.\nYou will receive a new playlist with fresh tracks every monday !\n(Send 'stop' to disabled)"
+
+                #Disabled auto weekly playlist
+                elif 'stop' in user_message:
+
+                    functions.change_autoplaylist_attribute(DATABASE_URL, user_id, "false")
+
+                    returned_message = "Auto weekly playlist mode has been disabled.\nYou will NOT receive any new playlist from us ! This will not delete any playlists created previously.\n(Send 'start' to enabled)"
                 else:
                     returned_message = "Hello! Welcome on Check this out App :)\nIt's a multifunction Spotify bot\nSend '!menu' to view all functions you can use"
 
@@ -148,3 +167,4 @@ def privacy():
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
+    schedule.every().monday.at("21:55").do(functions.auto_weekly_playlist, db_url=DATABASE_URL, cli_id=CLIENT_ID, cli_secret=CLIENT_SECRET, rfresh_url=SPOTIFY_TOKEN_URL, acc_token=ACCESS_TOKEN)
