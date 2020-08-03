@@ -290,7 +290,6 @@ def weekly_playlist_process(token):
 
 #Create the weekly playlist for each user that enabled the mode in DB 
 def auto_weekly_playlist(db_url, cli_id, cli_secret, rfresh_url, acc_token):
-
     #Connect with the DB
     conn = psycopg2.connect(db_url, sslmode='require')
     cur = conn.cursor()

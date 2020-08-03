@@ -167,4 +167,6 @@ def privacy():
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
-    schedule.every().monday.at("21:55").do(functions.auto_weekly_playlist, db_url=DATABASE_URL, cli_id=CLIENT_ID, cli_secret=CLIENT_SECRET, rfresh_url=SPOTIFY_TOKEN_URL, acc_token=ACCESS_TOKEN)
+    schedule.every().monday.at("21:59").do(functions.auto_weekly_playlist, db_url=DATABASE_URL, cli_id=CLIENT_ID, cli_secret=CLIENT_SECRET, rfresh_url=SPOTIFY_TOKEN_URL, acc_token=ACCESS_TOKEN)
+    while True:
+        schedule.run_pending()
