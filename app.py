@@ -5,7 +5,8 @@ import sys
 import argparse
 import urllib
 import functions
-import schedule
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.cron import CronTrigger
 
 app = Flask(__name__)
 
@@ -64,7 +65,7 @@ def webhook_action():
             #If user_id is not in the DB
             if not search_returned:
                 #Return authorize endpoint the user needs to log in
-                returned_message = functions.app_authorization(CLIENT_ID, REDIRECT_URI, SCOPE, user_id, SPOTIFY_AUTH_URL)
+                returned_message = "Hello :-) First of all I need to access your Spotify data so you have to authorize me here :\n" + functions.app_authorization(CLIENT_ID, REDIRECT_URI, SCOPE, user_id, SPOTIFY_AUTH_URL)
             #Send functions menu to the user
             elif 'menu' in user_message:
                 returned_message = "update : get the new releases list for the followed artists\ntop artist [short | medium | long] : get your current top artists for time range selected\ntop track [short | medium | long] : get your current top tracks for time range selected"
@@ -166,7 +167,12 @@ def privacy():
     return "This facebook messenger bot's only purpose is to advertise user for each new album or song release of their favorites artists on Spotify. That's all. We don't use it in any other way."
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
-    schedule.every().monday.at("21:59").do(functions.auto_weekly_playlist, db_url=DATABASE_URL, cli_id=CLIENT_ID, cli_secret=CLIENT_SECRET, rfresh_url=SPOTIFY_TOKEN_URL, acc_token=ACCESS_TOKEN)
+    scheduler = BackgroundScheduler()
+    trigger = CronTrigger(day_of_week='mon', hour=19, minute=30)
+    scheduler.add_job(func=functions.auto_weekly_playlist, trigger=trigger, args=[DATABASE_URL,CLIENT_ID,CLIENT_SECRET,SPOTIFY_TOKEN_URL,ACCESS_TOKEN])
+    scheduler.start()
+    app.run(debug=True, host='0.0.0.0', use_reloader=False)
+    '''schedule.every().monday.at("21:59").do(functions.auto_weekly_playlist, db_url=DATABASE_URL, cli_id=CLIENT_ID, cli_secret=CLIENT_SECRET, rfresh_url=SPOTIFY_TOKEN_URL, acc_token=ACCESS_TOKEN)
     while True:
         schedule.run_pending()
+    '''
