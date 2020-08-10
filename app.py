@@ -168,7 +168,7 @@ def privacy():
 
 if __name__ == '__main__':
     scheduler = BackgroundScheduler()
-    trigger = CronTrigger(day_of_week='mon', hour=19, minute=30)
+    trigger = CronTrigger(day_of_week='mon', hour=19, minute=33)
     scheduler.add_job(func=functions.auto_weekly_playlist, trigger=trigger, args=[DATABASE_URL,CLIENT_ID,CLIENT_SECRET,SPOTIFY_TOKEN_URL,ACCESS_TOKEN])
     scheduler.start()
     app.run(debug=True, host='0.0.0.0', use_reloader=False)
