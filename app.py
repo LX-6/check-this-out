@@ -174,7 +174,7 @@ if __name__ == '__main__':
     #trigger = CronTrigger(day_of_week='wed', hour=19, minute=33)
     #scheduler.add_job(func=functions.auto_weekly_playlist, trigger=trigger, args=[DATABASE_URL,CLIENT_ID,CLIENT_SECRET,SPOTIFY_TOKEN_URL,ACCESS_TOKEN])
     #scheduler.add_job(func=test_schedule, trigger=trigger)
-    scheduler.add_job(func=test_schedule, 'interval', minutes=1)
+    scheduler.add_job(func=test_schedule, trigger='interval', minutes=1)
     scheduler.start()
     #app.run(debug=True, host='0.0.0.0', use_reloader=False)
     app.run(debug=True, host='0.0.0.0')
