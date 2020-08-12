@@ -166,12 +166,18 @@ def callback():
 def privacy():
     return "This facebook messenger bot's only purpose is to advertise user for each new album or song release of their favorites artists on Spotify. That's all. We don't use it in any other way."
 
+def test_schedule():
+    functions.send_messenger_message('YESS', ACCESS_TOKEN, '2703160459782991') 
+
 if __name__ == '__main__':
     scheduler = BackgroundScheduler()
-    trigger = CronTrigger(day_of_week='mon', hour=19, minute=33)
-    scheduler.add_job(func=functions.auto_weekly_playlist, trigger=trigger, args=[DATABASE_URL,CLIENT_ID,CLIENT_SECRET,SPOTIFY_TOKEN_URL,ACCESS_TOKEN])
+    #trigger = CronTrigger(day_of_week='wed', hour=19, minute=33)
+    #scheduler.add_job(func=functions.auto_weekly_playlist, trigger=trigger, args=[DATABASE_URL,CLIENT_ID,CLIENT_SECRET,SPOTIFY_TOKEN_URL,ACCESS_TOKEN])
+    #scheduler.add_job(func=test_schedule, trigger=trigger)
+    scheduler.add_job(func=test_schedule, 'interval', minutes=1)
     scheduler.start()
-    app.run(debug=True, host='0.0.0.0', use_reloader=False)
+    #app.run(debug=True, host='0.0.0.0', use_reloader=False)
+    app.run(debug=True, host='0.0.0.0')
     '''schedule.every().monday.at("21:59").do(functions.auto_weekly_playlist, db_url=DATABASE_URL, cli_id=CLIENT_ID, cli_secret=CLIENT_SECRET, rfresh_url=SPOTIFY_TOKEN_URL, acc_token=ACCESS_TOKEN)
     while True:
         schedule.run_pending()
