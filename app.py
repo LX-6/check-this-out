@@ -9,6 +9,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 
 app = Flask(__name__)
+scheduler = BackgroundScheduler()
 
 #Database
 DATABASE_URL = os.getenv('DATABASE_URL')
@@ -170,11 +171,11 @@ def test_schedule():
     functions.send_messenger_message('YESS', ACCESS_TOKEN, '2703160459782991') 
 
 if __name__ == '__main__':
-    scheduler = BackgroundScheduler()
+    
     #trigger = CronTrigger(day_of_week='wed', hour=19, minute=33)
     #scheduler.add_job(func=functions.auto_weekly_playlist, trigger=trigger, args=[DATABASE_URL,CLIENT_ID,CLIENT_SECRET,SPOTIFY_TOKEN_URL,ACCESS_TOKEN])
     #scheduler.add_job(func=test_schedule, trigger=trigger)
-    scheduler.add_job(func=test_schedule, trigger='interval', minutes=1)
+    scheduler.add_job(func=test_schedule, trigger='interval', seconds=10)
     scheduler.start()
     #app.run(debug=True, host='0.0.0.0', use_reloader=False)
     app.run(debug=True, host='0.0.0.0')
