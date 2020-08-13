@@ -168,7 +168,8 @@ def privacy():
     return "This facebook messenger bot's only purpose is to advertise user for each new album or song release of their favorites artists on Spotify. That's all. We don't use it in any other way."
 
 def test_schedule():
-    functions.send_messenger_message('YESS', ACCESS_TOKEN, '2703160459782991') 
+    print('YAS')
+    #functions.send_messenger_message('YESS', ACCESS_TOKEN, '2703160459782991') 
 
 if __name__ == '__main__':
     
