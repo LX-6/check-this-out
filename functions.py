@@ -314,7 +314,7 @@ def send_messenger_message(message, access_token, user_id):
         'recipient': {'id': user_id},
         'message': {'text': message}
     }
-    r = requests.post('https://graph.facebook.com/v7.0/me/messages/?access_token=' + access_token, json=response)
+    r = requests.post('https://graph.facebook.com/v8.0/me/messages/?access_token=' + access_token, json=response)
 
 #######################
 # DATABASE FUNCTIONS #

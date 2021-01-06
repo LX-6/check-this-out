@@ -70,7 +70,7 @@ def webhook_action():
                 returned_message = "Hello :-) First of all I need to access your Spotify data so you have to authorize me here :\n" + functions.app_authorization(CLIENT_ID, REDIRECT_URI, SCOPE, user_id, SPOTIFY_AUTH_URL)
             #Send functions menu to the user
             elif 'menu' in user_message:
-                returned_message = "update : get the new releases list for the followed artists\ntop artist [short | medium | long] : get your current top artists for time range selected\ntop track [short | medium | long] : get your current top tracks for time range selected"
+                returned_message = "start : Enabled auto weekly playlist mode, you will receive a new playlist with fresh tracks every monday directly on your Spotify!\nstop : Disabled auto weekly playlist mode\n\ntop artist [short | medium | long] : get your current top artists for time range selected\ntop track [short | medium | long] : get your current top tracks for time range selected"
             #If user_id is in the DB
             else:
                 #Different cases
@@ -128,7 +128,7 @@ def webhook_action():
 
                     returned_message = "Auto weekly playlist mode has been disabled.\nYou will NOT receive any new playlist from us ! This will not delete any playlists created previously.\n(Send 'start' to enabled)"
                 else:
-                    returned_message = "Hello! Welcome on Check this out App :)\nIt's a multifunction Spotify bot\nSend '!menu' to view all functions you can use"
+                    returned_message = "Hello! Welcome on Check this out App :)\nIt's a multifunction Spotify bot\nSend 'menu' to view all functions you can use"
 
         #The user sent an other type of content than a message
         except:
