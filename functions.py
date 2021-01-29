@@ -277,18 +277,13 @@ def add_song_to_playlist(token, playlist_uri, releases_list):
 
 #Create a new playlist with new releases from followed artists
 def weekly_playlist_process(token):
-    # try:
-    #     playlist_uri = create_weekly_playlist(token)
-    #     releases_list = get_new_releases_list(token, followed_list(token))
-    #     add_song_to_playlist(token, playlist_uri, releases_list)
-    #     returned_string = "Your weekly playlist has been created successfully!\nHave a good week :-)"
-    # except:
-    #     returned_string = "An issue occurs while creating your weekly playlist :'(\nNevermind have a good week :-)"
-
-    playlist_uri = create_weekly_playlist(token)
-    releases_list = get_new_releases_list(token, followed_list(token))
-    add_song_to_playlist(token, playlist_uri, releases_list)
-    returned_string = "Your weekly playlist has been created successfully!\nHave a good week :-)"
+    try:
+        playlist_uri = create_weekly_playlist(token)
+        releases_list = get_new_releases_list(token, followed_list(token))
+        add_song_to_playlist(token, playlist_uri, releases_list)
+        returned_string = "Your weekly playlist has been created successfully!\nHave a good week :-)"
+    except:
+        returned_string = "An issue occurs while creating your weekly playlist :'(\nNevermind have a good week :-)"
 
     return returned_string
 
@@ -310,8 +305,7 @@ def auto_weekly_playlist(db_url, cli_id, cli_secret, rfresh_url, acc_token):
         #Create playlist
         message = weekly_playlist_process(token)
         #Send message to warn the user
-        #send_messenger_message(message, acc_token, user[0][1])
-        print(message)
+        #send_messenger_message(message, acc_token, user[1])
 
 #Send message to a specific user named after user_id
 def send_messenger_message(message, access_token, user_id):

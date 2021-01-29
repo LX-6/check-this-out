@@ -63,7 +63,7 @@ def webhook_action():
     for entry in data['entry']:
         user_id = entry['messaging'][0]['sender']['id']
         #The user sent normal message
-        """ try:
+        try:
             #User message in lower case
             user_message = entry['messaging'][0]['message']['text'].lower()
             #Search for this user_id in DB
@@ -80,12 +80,11 @@ def webhook_action():
                 #Different cases
                 if 'update' in user_message:
                     #Asking for a new access_token, search_returned == refresh_token
-                    #authorization_header = functions.get_refreshed_token(search_returned, CLIENT_ID, CLIENT_SECRET, SPOTIFY_TOKEN_URL)
+                    authorization_header = functions.get_refreshed_token(search_returned, CLIENT_ID, CLIENT_SECRET, SPOTIFY_TOKEN_URL)
                     #Get followed artists list back
-                    #list_artist = functions.followed_list(authorization_header)
+                    list_artist = functions.followed_list(authorization_header)
                     #Return new release list as a string
-                    #returned_message = functions.new_release(authorization_header, list_artist)
-                    functions.auto_weekly_playlist(DATABASE_URL,CLIENT_ID,CLIENT_SECRET,SPOTIFY_TOKEN_URL,ACCESS_TOKEN)
+                    returned_message = functions.new_release(authorization_header, list_artist)
 
                 #Top artist               
                 elif 'top artist' in user_message:
@@ -137,77 +136,8 @@ def webhook_action():
 
         #The user sent an other type of content than a message
         except:
-            returned_message = 'I do not understand what you sent me :( Please send me a normal message' """
-        #User message in lower case
-        user_message = entry['messaging'][0]['message']['text'].lower()
-        #Search for this user_id in DB
-        search_returned = functions.search_user_db(DATABASE_URL, user_id)
-        #If user_id is not in the DB
-        if not search_returned:
-            #Return authorize endpoint the user needs to log in
-            returned_message = "Hello :-) First of all I need to access your Spotify data so you have to authorize me here :\n" + functions.app_authorization(CLIENT_ID, REDIRECT_URI, SCOPE, user_id, SPOTIFY_AUTH_URL)
-        #Send functions menu to the user
-        elif 'menu' in user_message:
-            returned_message = "start : Enabled auto weekly playlist mode, you will receive a new playlist with fresh tracks every monday directly on your Spotify!\nstop : Disabled auto weekly playlist mode\n\ntop artist [short | medium | long] : get your current top artists for time range selected\ntop track [short | medium | long] : get your current top tracks for time range selected"
-        #If user_id is in the DB
-        else:
-            #Different cases
-            if 'update' in user_message:
-                #Asking for a new access_token, search_returned == refresh_token
-                authorization_header = functions.get_refreshed_token(search_returned, CLIENT_ID, CLIENT_SECRET, SPOTIFY_TOKEN_URL)
-                #Get followed artists list back
-                list_artist = functions.followed_list(authorization_header)
-                #Return new release list as a string
-                returned_message = functions.new_release(authorization_header, list_artist)
+            returned_message = 'I do not understand what you sent me :( Please send me a normal message'
 
-            #Top artist               
-            elif 'top artist' in user_message:
-                choice = ['short', 'medium', 'long']
-                #If user do not send any choice we set by default for medium
-                timing = 'medium_term'
-
-                #Define choice for top time range
-                for c in choice:
-                    if c in user_message:
-                        timing = c + '_term'
-
-                #Asking for a new access_token, search_returned == refresh_token
-                authorization_header = functions.get_refreshed_token(search_returned, CLIENT_ID, CLIENT_SECRET, SPOTIFY_TOKEN_URL)
-                #Return top user artist
-                returned_message = functions.top_artist(authorization_header, timing)
-            
-            #Top track
-            elif 'top track' in user_message:
-                choice = ['short', 'medium', 'long']
-                #If user do not send any choice we set by default for medium
-                timing = 'medium_term'
-
-                #Define choice for top time range
-                for c in choice:
-                    if c in user_message:
-                        timing = c + '_term'
-
-                #Asking for a new access_token, search_returned == refresh_token
-                authorization_header = functions.get_refreshed_token(search_returned, CLIENT_ID, CLIENT_SECRET, SPOTIFY_TOKEN_URL)
-                #Return top user artist
-                returned_message = functions.top_track(authorization_header, timing)
-            
-            #Enabled auto weekly playlist
-            elif 'start' in user_message:
-
-                functions.change_autoplaylist_attribute(DATABASE_URL, user_id, "true")
-
-                returned_message = "Auto weekly playlist mode has been enabled.\nYou will receive a new playlist with fresh tracks every monday !\n(Send 'stop' to disabled)"
-
-            #Disabled auto weekly playlist
-            elif 'stop' in user_message:
-
-                functions.change_autoplaylist_attribute(DATABASE_URL, user_id, "false")
-
-                returned_message = "Auto weekly playlist mode has been disabled.\nYou will NOT receive any new playlist from us ! This will not delete any playlists created previously.\n(Send 'start' to enabled)"
-            else:
-                returned_message = "Hello! Welcome on Check this out App :)\nIt's a multifunction Spotify bot\nSend 'menu' to view all functions you can use"
-            
         functions.send_messenger_message(returned_message, ACCESS_TOKEN, user_id)
 
     return Response(response="EVENT RECEIVED",status=200)
@@ -244,13 +174,8 @@ def privacy():
 
 @scheduler.task('cron', day_of_week='fri', hour=16, minute=6)
 def launch_weekly_playlist():
-    print("oui")
     functions.auto_weekly_playlist(DATABASE_URL,CLIENT_ID,CLIENT_SECRET,SPOTIFY_TOKEN_URL,ACCESS_TOKEN) 
 
 if __name__ == '__main__':
 
-    #scheduler.add_job(func=test_schedule, trigger=trigger)
-    #scheduler.add_job(id ='Scheduled task', func=test_schedule, trigger='interval', seconds=10)
-    #scheduler.start()
-    #app.run(debug=True, host='0.0.0.0', use_reloader=False)
     app.run(host='0.0.0.0')
