@@ -168,7 +168,7 @@ def privacy():
     return "This facebook messenger bot's only purpose is to advertise user for each new album or song release of their favorites artists on Spotify. That's all. We don't use it in any other way."
 
 @app.before_first_request
-@scheduler.task('cron', day_of_week='fri', hour=19, minute=56)
+@scheduler.task('cron', day_of_week='fri', hour=20, minute=7)
 def launch_weekly_playlist():
     functions.auto_weekly_playlist(DATABASE_URL,CLIENT_ID,CLIENT_SECRET,SPOTIFY_TOKEN_URL,ACCESS_TOKEN) 
 
