@@ -306,7 +306,8 @@ def auto_weekly_playlist(db_url, cli_id, cli_secret, rfresh_url, acc_token):
         #Create playlist
         message = weekly_playlist_process(token)
         #Send message to warn the user
-        send_messenger_message(message, acc_token, user[0][1])
+        #send_messenger_message(message, acc_token, user[0][1])
+        print(message)
 
 #Send message to a specific user named after user_id
 def send_messenger_message(message, access_token, user_id):
