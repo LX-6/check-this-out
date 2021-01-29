@@ -5,14 +5,10 @@ import sys
 import argparse
 import urllib
 import functions
-#from apscheduler.schedulers.background import BackgroundScheduler
-#from apscheduler.triggers.cron import CronTrigger
 from flask_apscheduler import APScheduler
 
 app = Flask(__name__)
 scheduler = APScheduler()
-#trigger = CronTrigger(day_of_week='fri', hour=15, minute=10)
-#scheduler.add_job(func=functions.auto_weekly_playlist, trigger=trigger, args=[DATABASE_URL,CLIENT_ID,CLIENT_SECRET,SPOTIFY_TOKEN_URL,ACCESS_TOKEN])
 scheduler.init_app(app)
 scheduler.start()
 
@@ -50,7 +46,6 @@ def webhook_verify():
     if request.args.get('hub.verify_token') == VERIFY_TOKEN:
         return request.args.get('hub.challenge')
     return "Wrong verify token"
-
 
 #Receive message from messenger & return message depends on what the user choose
 @app.route('/webhook', methods=['POST'])
@@ -172,6 +167,7 @@ def callback():
 def privacy():
     return "This facebook messenger bot's only purpose is to advertise user for each new album or song release of their favorites artists on Spotify. That's all. We don't use it in any other way."
 
+@app.before_first_request
 @scheduler.task('cron', day_of_week='fri', hour=19, minute=56)
 def launch_weekly_playlist():
     functions.auto_weekly_playlist(DATABASE_URL,CLIENT_ID,CLIENT_SECRET,SPOTIFY_TOKEN_URL,ACCESS_TOKEN) 
