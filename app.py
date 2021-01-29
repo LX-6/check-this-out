@@ -150,12 +150,11 @@ def webhook_action():
             #Different cases
             if 'update' in user_message:
                 #Asking for a new access_token, search_returned == refresh_token
-                #authorization_header = functions.get_refreshed_token(search_returned, CLIENT_ID, CLIENT_SECRET, SPOTIFY_TOKEN_URL)
+                authorization_header = functions.get_refreshed_token(search_returned, CLIENT_ID, CLIENT_SECRET, SPOTIFY_TOKEN_URL)
                 #Get followed artists list back
-                #list_artist = functions.followed_list(authorization_header)
+                list_artist = functions.followed_list(authorization_header)
                 #Return new release list as a string
-                #returned_message = functions.new_release(authorization_header, list_artist)
-                functions.auto_weekly_playlist(DATABASE_URL,CLIENT_ID,CLIENT_SECRET,SPOTIFY_TOKEN_URL,ACCESS_TOKEN)
+                returned_message = functions.new_release(authorization_header, list_artist)
 
             #Top artist               
             elif 'top artist' in user_message:
@@ -244,8 +243,8 @@ def test_schedule():
     functions.send_messenger_message('YESS', ACCESS_TOKEN, '2703160459782991') 
 
 if __name__ == '__main__':
-    #trigger = CronTrigger(day_of_week='fri', hour=14, minute=16)
-    #scheduler.add_job(func=functions.auto_weekly_playlist, trigger=trigger, args=[DATABASE_URL,CLIENT_ID,CLIENT_SECRET,SPOTIFY_TOKEN_URL,ACCESS_TOKEN])
+    trigger = CronTrigger(day_of_week='fri', hour=16, minute=8)
+    scheduler.add_job(func=functions.auto_weekly_playlist, trigger=trigger, args=[DATABASE_URL,CLIENT_ID,CLIENT_SECRET,SPOTIFY_TOKEN_URL,ACCESS_TOKEN])
     #scheduler.add_job(func=test_schedule, trigger=trigger)
     #scheduler.add_job(id ='Scheduled task', func=test_schedule, trigger='interval', seconds=10)
     #scheduler.start()
