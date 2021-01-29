@@ -6,11 +6,15 @@ import argparse
 import urllib
 import functions
 #from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.triggers.cron import CronTrigger
+#from apscheduler.triggers.cron import CronTrigger
 from flask_apscheduler import APScheduler
 
 app = Flask(__name__)
 scheduler = APScheduler()
+#trigger = CronTrigger(day_of_week='fri', hour=15, minute=10)
+#scheduler.add_job(func=functions.auto_weekly_playlist, trigger=trigger, args=[DATABASE_URL,CLIENT_ID,CLIENT_SECRET,SPOTIFY_TOKEN_URL,ACCESS_TOKEN])
+scheduler.init_app(app)
+scheduler.start()
 
 #Database
 DATABASE_URL = os.getenv('DATABASE_URL')
@@ -238,13 +242,12 @@ def callback():
 def privacy():
     return "This facebook messenger bot's only purpose is to advertise user for each new album or song release of their favorites artists on Spotify. That's all. We don't use it in any other way."
 
-def test_schedule():
-    print('YAS')
-    functions.send_messenger_message('YESS', ACCESS_TOKEN, '2703160459782991') 
+@scheduler.task('cron',  day_of_week='fri', hour=17, minute=0)
+def launch_weekly_playlist():
+    functions.auto_weekly_playlist(DATABASE_URL,CLIENT_ID,CLIENT_SECRET,SPOTIFY_TOKEN_URL,ACCESS_TOKEN) 
 
 if __name__ == '__main__':
-    trigger = CronTrigger(day_of_week='fri', hour=15, minute=10)
-    scheduler.add_job(func=functions.auto_weekly_playlist, trigger=trigger, args=[DATABASE_URL,CLIENT_ID,CLIENT_SECRET,SPOTIFY_TOKEN_URL,ACCESS_TOKEN])
+
     #scheduler.add_job(func=test_schedule, trigger=trigger)
     #scheduler.add_job(id ='Scheduled task', func=test_schedule, trigger='interval', seconds=10)
     #scheduler.start()
