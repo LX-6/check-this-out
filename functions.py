@@ -51,8 +51,6 @@ def get_refreshed_token(refresh_token, client_id, client_secret, refresh_url):
     post_request = requests.post(refresh_url, data=code_payload, headers=headers)
     response_data = json.loads(post_request.text)
 
-    print(response_data)
-
     access_token = response_data["access_token"] 
 
     #Use the access token to access Spotify API
@@ -112,8 +110,7 @@ def new_release(token, list_artist):
         try:
             sp = spotipy.Spotify(auth=token)
         except:
-            print("Can't get token")
-            return
+            return "Woopsie, I have an issue :s"
 
         today_minus = today - datetime.timedelta(days=7)
         #Browse followed artists list
@@ -280,13 +277,18 @@ def add_song_to_playlist(token, playlist_uri, releases_list):
 
 #Create a new playlist with new releases from followed artists
 def weekly_playlist_process(token):
-    try:
-        playlist_uri = create_weekly_playlist(token)
-        releases_list = get_new_releases_list(token, better_followed_list(token))
-        add_song_to_playlist(token, playlist_uri, releases_list)
-        returned_string = "Your weekly playlist has been created successfully!\nHave a good week :-)"
-    except:
-        returned_string = "An issue occurs while creating your weekly playlist :'(\nNevermind have a good week :-)"
+    # try:
+    #     playlist_uri = create_weekly_playlist(token)
+    #     releases_list = get_new_releases_list(token, better_followed_list(token))
+    #     add_song_to_playlist(token, playlist_uri, releases_list)
+    #     returned_string = "Your weekly playlist has been created successfully!\nHave a good week :-)"
+    # except:
+    #     returned_string = "An issue occurs while creating your weekly playlist :'(\nNevermind have a good week :-)"
+
+    playlist_uri = create_weekly_playlist(token)
+    releases_list = get_new_releases_list(token, better_followed_list(token))
+    add_song_to_playlist(token, playlist_uri, releases_list)
+    returned_string = "Your weekly playlist has been created successfully!\nHave a good week :-)"
 
     return returned_string
 
