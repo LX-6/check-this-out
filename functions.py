@@ -279,14 +279,14 @@ def add_song_to_playlist(token, playlist_uri, releases_list):
 def weekly_playlist_process(token):
     # try:
     #     playlist_uri = create_weekly_playlist(token)
-    #     releases_list = get_new_releases_list(token, better_followed_list(token))
+    #     releases_list = get_new_releases_list(token, followed_list(token))
     #     add_song_to_playlist(token, playlist_uri, releases_list)
     #     returned_string = "Your weekly playlist has been created successfully!\nHave a good week :-)"
     # except:
     #     returned_string = "An issue occurs while creating your weekly playlist :'(\nNevermind have a good week :-)"
 
     playlist_uri = create_weekly_playlist(token)
-    releases_list = get_new_releases_list(token, better_followed_list(token))
+    releases_list = get_new_releases_list(token, followed_list(token))
     add_song_to_playlist(token, playlist_uri, releases_list)
     returned_string = "Your weekly playlist has been created successfully!\nHave a good week :-)"
 
