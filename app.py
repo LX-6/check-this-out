@@ -244,6 +244,7 @@ def privacy():
 
 @scheduler.task('cron',  day_of_week='fri', hour=17, minute=0)
 def launch_weekly_playlist():
+    print("oui")
     functions.auto_weekly_playlist(DATABASE_URL,CLIENT_ID,CLIENT_SECRET,SPOTIFY_TOKEN_URL,ACCESS_TOKEN) 
 
 if __name__ == '__main__':
