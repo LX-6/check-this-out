@@ -304,7 +304,7 @@ def auto_weekly_playlist(db_url, cli_id, cli_secret, rfresh_url, acc_token):
 
     for user in sql_results:
         #Get fresh token
-        token = get_refreshed_token(user[0][0], cli_id, cli_secret, rfresh_url)
+        token = get_refreshed_token(user[0], cli_id, cli_secret, rfresh_url)
         #Create playlist
         message = weekly_playlist_process(token)
         #Send message to warn the user
