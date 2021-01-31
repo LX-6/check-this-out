@@ -167,11 +167,11 @@ def callback():
 def privacy():
     return "This facebook messenger bot's only purpose is to advertise user for each new album or song released from their favorites artists on Spotify. That's all. We don't use it in any other way."
 
-@scheduler.task('cron', day_of_week='sun', hour=11, minute=54)
+@scheduler.task('cron', day_of_week='sun', hour=11, minute=56)
 def launch_weekly_playlist():
     #functions.auto_weekly_playlist(DATABASE_URL,CLIENT_ID,CLIENT_SECRET,SPOTIFY_TOKEN_URL,ACCESS_TOKEN)
     print("This task is running every 5 seconds")
 
 if __name__ == '__main__':
 
-    app.run(host='0.0.0.0', debug=False)
+    app.run(host='0.0.0.0', debug=False, use_reloader=False)
