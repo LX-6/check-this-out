@@ -298,7 +298,6 @@ def auto_weekly_playlist(db_url, cli_id, cli_secret, rfresh_url, acc_token):
     sql_results = cur.fetchall()
     cur.close()
     conn.close()
-    print(sql_results)
 
     for user in sql_results:
         #Get fresh token
