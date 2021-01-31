@@ -9,9 +9,6 @@ from flask_apscheduler import APScheduler
 from apscheduler.triggers.cron import CronTrigger
 
 app = Flask(__name__)
-scheduler = APScheduler()
-trigger = CronTrigger(day_of_week='sun', hour=11, minute=42)
-scheduler.add_job(id ='Scheduled task', func=functions.launch_weekly_playlist, trigger = trigger)
 
 #Database
 DATABASE_URL = os.getenv('DATABASE_URL')
@@ -175,5 +172,8 @@ def launch_weekly_playlist():
 
 if __name__ == '__main__':
 
-    app.run(host='0.0.0.0', use_reloader=False)
+    scheduler = APScheduler()
+    trigger = CronTrigger(day_of_week='sun', hour=11, minute=47)
+    scheduler.add_job(id ='Scheduled task', func=functions.launch_weekly_playlist, trigger = trigger)
     scheduler.start()
+    app.run(host='0.0.0.0', use_reloader=False)
