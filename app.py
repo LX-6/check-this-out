@@ -6,9 +6,11 @@ import argparse
 import urllib
 import functions
 from flask_apscheduler import APScheduler
-from apscheduler.triggers.cron import CronTrigger
 
 app = Flask(__name__)
+scheduler = APScheduler()
+scheduler.init_app(app)
+scheduler.start()
 
 #Database
 DATABASE_URL = os.getenv('DATABASE_URL')
@@ -165,15 +167,11 @@ def callback():
 def privacy():
     return "This facebook messenger bot's only purpose is to advertise user for each new album or song released from their favorites artists on Spotify. That's all. We don't use it in any other way."
 
-""" @scheduler.task('cron', day_of_week='sun', hour=11, minute=24)
+@scheduler.task('cron', day_of_week='sun', hour=11, minute=46)
 def launch_weekly_playlist():
     #functions.auto_weekly_playlist(DATABASE_URL,CLIENT_ID,CLIENT_SECRET,SPOTIFY_TOKEN_URL,ACCESS_TOKEN)
-    print("This task is running every 5 seconds") """
+    print("This task is running every 5 seconds")
 
 if __name__ == '__main__':
 
-    scheduler = APScheduler()
-    trigger = CronTrigger(day_of_week='sun', hour=11, minute=47)
-    scheduler.add_job(id ='Scheduled task', func=functions.launch_weekly_playlist, trigger = trigger)
-    scheduler.start()
-    app.run(host='0.0.0.0', use_reloader=False)
+    app.run(host='0.0.0.0', debug=False)
