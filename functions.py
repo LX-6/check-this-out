@@ -315,6 +315,11 @@ def send_messenger_message(message, access_token, user_id):
     }
     r = requests.post('https://graph.facebook.com/v8.0/me/messages/?access_token=' + access_token, json=response)
 
+
+def launch_weekly_playlist():
+    #functions.auto_weekly_playlist(DATABASE_URL,CLIENT_ID,CLIENT_SECRET,SPOTIFY_TOKEN_URL,ACCESS_TOKEN)
+    print("This task is running every 5 seconds")
+
 #######################
 # DATABASE FUNCTIONS #
 #####################
