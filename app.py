@@ -158,7 +158,7 @@ def callback():
         except:
             returned_message = "It seems you did not accept to authorize access to the data sets defined in the scopes :(\nYou can't use the app without it.\nWe do not save or sell your personal datas!"
         functions.send_messenger_message(returned_message, ACCESS_TOKEN, user_id) 
-        return "You can close this tab and resend message :)"
+        return "You can close this tab and resend a message on Messenger :)"
     except:
         return "You need to send a message to this messenger bot : https://m.me/106434560955345"
         
@@ -167,11 +167,10 @@ def callback():
 def privacy():
     return "This facebook messenger bot's only purpose is to advertise user for each new album or song released from their favorites artists on Spotify. That's all. We don't use it in any other way."
 
-@scheduler.task('cron', day_of_week='sun', hour=11, minute=56)
+@scheduler.task('cron', day_of_week='tue', hour=15, minute=43)
 def launch_weekly_playlist():
-    #functions.auto_weekly_playlist(DATABASE_URL,CLIENT_ID,CLIENT_SECRET,SPOTIFY_TOKEN_URL,ACCESS_TOKEN)
-    print("This task is running every 5 seconds")
+    functions.auto_weekly_playlist(DATABASE_URL,CLIENT_ID,CLIENT_SECRET,SPOTIFY_TOKEN_URL,ACCESS_TOKEN)
 
 if __name__ == '__main__':
 
-    app.run(host='0.0.0.0', debug=False, use_reloader=False)
+    app.run(host='0.0.0.0')

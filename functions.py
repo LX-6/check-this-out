@@ -170,6 +170,63 @@ def top_track(token, timing):
 
     return returned_string
 
+#Create the weekly playlist for each user that enabled the mode in DB 
+def auto_weekly_playlist(db_url, cli_id, cli_secret, rfresh_url, acc_token):
+    #Connect with the DB
+    conn = psycopg2.connect(db_url, sslmode='require')
+    cur = conn.cursor()
+    #Select user that enabled the auto playlist mode
+    cur.execute("SELECT refreshtoken, messengerid FROM checkthisout WHERE autoplaylist = 'true';")
+    #Retrieve sql request results
+    sql_results = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    for user in sql_results:
+        #Get fresh token
+        token = get_refreshed_token(user[0], cli_id, cli_secret, rfresh_url)
+        #Create playlist
+        message = weekly_playlist_process(token)
+        #Send message to warn the user
+        #send_messenger_message(message, acc_token, user[1])
+
+
+#Create a new playlist with new releases from followed artists
+def weekly_playlist_process(token):
+    try:
+        if not playlist_already_created(token):
+            playlist_uri = create_weekly_playlist(token)
+            releases_list = get_new_releases_list(token, followed_list(token))
+            add_song_to_playlist(token, playlist_uri, releases_list)
+            returned_string = "Your weekly playlist has been created successfully!\nHave a good week :-)"
+        else:
+            returned_string = "Your weekly playlist has been already created ;-)"
+    except:
+        returned_string = "An issue occurs while creating your weekly playlist :'(\nNevermind, have a good week :-)"
+
+    return returned_string
+
+#Check if the weekly playlist has been already created, return True if so
+def playlist_already_created(token):
+
+    #Auth with token
+    try:
+        sp = spotipy.Spotify(auth=token)
+    except:
+        return "Woopsie, I have an issue :s"
+
+    ret = False
+
+    user_id = sp.current_user()['id']
+    playlists_list = sp.user_playlists(user_id, limit=10)
+    name = "CTO week " + str(datetime.date.today().isocalendar()[1]) + " " + str(datetime.date.today().isocalendar()[0])
+    for item in playlists_list['items']:
+        if item['name'] == name:
+            ret = True
+            break
+        
+    return ret
+
 #Create playlist & return the playlist uri
 def create_weekly_playlist(token):
     
@@ -181,7 +238,7 @@ def create_weekly_playlist(token):
 
     #Create weekly playlist
     user_id = sp.current_user()['id']
-    name = "CTO week " + str(datetime.date.today().isocalendar()[1])
+    name = "CTO week " + str(datetime.date.today().isocalendar()[1]) + " " + str(datetime.date.today().isocalendar()[0])
     response = sp.user_playlist_create(user_id, name, public=False, description='Generate by Check this out app here : https://m.me/106434560955345')
 
     return response['uri']
@@ -274,38 +331,6 @@ def add_song_to_playlist(token, playlist_uri, releases_list):
     
     else:
         sp.user_playlist_add_tracks(user_id, playlist_uri, releases_list, None)
-
-#Create a new playlist with new releases from followed artists
-def weekly_playlist_process(token):
-    try:
-        playlist_uri = create_weekly_playlist(token)
-        releases_list = get_new_releases_list(token, followed_list(token))
-        add_song_to_playlist(token, playlist_uri, releases_list)
-        returned_string = "Your weekly playlist has been created successfully!\nHave a good week :-)"
-    except:
-        returned_string = "An issue occurs while creating your weekly playlist :'(\nNevermind have a good week :-)"
-
-    return returned_string
-
-#Create the weekly playlist for each user that enabled the mode in DB 
-def auto_weekly_playlist(db_url, cli_id, cli_secret, rfresh_url, acc_token):
-    #Connect with the DB
-    conn = psycopg2.connect(db_url, sslmode='require')
-    cur = conn.cursor()
-    #Select user that enabled the auto playlist mode
-    cur.execute("SELECT refreshtoken, messengerid FROM checkthisout WHERE autoplaylist = 'true';")
-    #Retrieve sql request results
-    sql_results = cur.fetchall()
-    cur.close()
-    conn.close()
-
-    for user in sql_results:
-        #Get fresh token
-        token = get_refreshed_token(user[0], cli_id, cli_secret, rfresh_url)
-        #Create playlist
-        message = weekly_playlist_process(token)
-        #Send message to warn the user
-        #send_messenger_message(message, acc_token, user[1])
 
 #Send message to a specific user named after user_id
 def send_messenger_message(message, access_token, user_id):
