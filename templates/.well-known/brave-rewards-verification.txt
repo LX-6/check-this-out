@@ -1,0 +1,4 @@
+This is a Brave Rewards publisher verification file.
+
+Domain: check-this-out-spotify-app.herokuapp.com
+Token: 5308c34d846aef58e285f76f1448d280d3eb86f435ec413f7201cc21e5d4ba7a
