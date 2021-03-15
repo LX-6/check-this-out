@@ -146,5 +146,9 @@ def callback():
 def privacy():
     return "This facebook messenger bot's only purpose is to advertise user for each new album or song release of their favorites artists on Spotify. That's all. We don't use it in any other way."
 
+@app.route("/.well_known/brave-rewards-verification.txt")
+def brave_rewards_verif():
+    return render_template('brave-rewards-verification.txt')
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
