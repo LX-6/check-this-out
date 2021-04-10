@@ -172,6 +172,6 @@ def launch_weekly_playlist():
 
 if __name__ == '__main__':
     if os.environ.get('WERKZEUG_RUN_MAIN') != 'true':
-        scheduler.add_job(func = launch_weekly_playlist, 'cron', day_of_week='sat', hour=20, minute=15)
+        scheduler.add_job(launch_weekly_playlist, 'cron', day_of_week='sat', hour=20, minute=15)
     scheduler.start()
     app.run(host='0.0.0.0', use_reloader=False)
