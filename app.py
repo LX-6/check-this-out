@@ -9,6 +9,8 @@ from flask_apscheduler import APScheduler
 
 app = Flask(__name__)
 scheduler = APScheduler()
+scheduler.init_app(app)
+scheduler.start()
 
 #Database
 DATABASE_URL = os.getenv('DATABASE_URL')
@@ -165,7 +167,7 @@ def callback():
 def privacy():
     return "This facebook messenger bot's only purpose is to advertise user for each new album or song released from their favorites artists on Spotify. That's all. We don't use it in any other way."
 
-@scheduler.task('cron', day_of_week='sat', hour=20, minute=36)
+#@scheduler.task('cron', day_of_week='sat', hour=20, minute=36)
 def launch_weekly_playlist():
     functions.auto_weekly_playlist(DATABASE_URL,CLIENT_ID,CLIENT_SECRET,SPOTIFY_TOKEN_URL,ACCESS_TOKEN)
 
@@ -176,6 +178,5 @@ if __name__ == '__main__':
     scheduler.start()
     '''
     
-    #scheduler.init_app(app)
-    scheduler.start()
     app.run(host='0.0.0.0', debug=False, use_reloader=False)
+    scheduler.add_job(launch_weekly_playlist, 'cron', day_of_week='sat', hour=20, minute=43)
